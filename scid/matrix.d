@@ -292,7 +292,27 @@ public:
         cols = n;
     }
 
+    /** Return a slice of the to row i
+     */
+    ref T[] opSlice(size_t I) (size_t i, size_t j) pure nothrow
+    in {
+        static if(I == 0) {
+            assert(i <= rows && j <= rows, "Invalid opSlice row indices");
+        } else {
+            assert(i <= cols  && j <= cols, "Invalid  opSlice col indices");
+        }
+    } body {
+        static assert(isGen, "Slicing only supported for general matrices");
 
+        static if(I == 0) {
+            // Get the indices at the start of each row
+            return iota(i, j, m.rows);
+        } else {
+            // Return the indices for the columns. These are linear
+            return iota(i, j);
+
+        }
+    }
 
     /** Return (a reference to) the element at row i, column j.
 
